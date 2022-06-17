@@ -11,7 +11,26 @@ WORKDIR /home/user/project-src/src
 RUN qmake
 RUN make
 
+USER root
+RUN apt update && apt install -y wget
+WORKDIR /home/user/
+RUN wget https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage
+RUN chmod +x linuxdeployqt-continuous-x86_64.AppImage
+RUN ./linuxdeployqt-continuous-x86_64.AppImage --appimage-extract
+RUN mv squashfs-root deployqt
+RUN chmod +x deployqt/AppRun
+RUN ln -s /home/user/deployqt/AppRun /usr/local/sbin/linuxdeployqt
+RUN rm -f linuxdeployqt-continuous-x86_64.AppImage
+
+USER user
+WORKDIR /home/user/project-src/src
+RUN mkdir deploy
+RUN cp qt-virtualkeyboard-server deploy/qt-virtualkeyboard-server
+COPY --chown=user qt-virtualkeyboard-server.desktop deploy/qt-virtualkeyboard-server.desktop
+RUN linuxdeployqt deploy/qt-virtualkeyboard-server -verbose=1 -qmldir=./qml
+
 FROM ubuntu:18.04 as release
+
 RUN apt update && apt full-upgrade -y
 RUN apt install -y --no-install-recommends \
     sudo \
@@ -43,5 +62,5 @@ USER user
 WORKDIR /home/user
 ENV HOME /home/user
 
-COPY --chown=user --from=qt-builder /home/user/qt-virtualkeyboard-server ./qt-virtualkeyboard-server
-CMD ./qt-virtualkeyboard-server
+COPY --chown=user --from=qt-builder /home/user/project-src/src/deploy ./deploy
+CMD ./deploy/AppRun

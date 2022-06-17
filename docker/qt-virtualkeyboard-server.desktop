@@ -1,0 +1,5 @@
+[Desktop Entry]
+Type=Application
+Name=Qt Virtual Keyboard Server
+Comment=Virtual Keyboard for Salient EVO
+Exec=qt-virtualkeyboard-server

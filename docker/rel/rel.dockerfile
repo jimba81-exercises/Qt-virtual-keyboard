@@ -7,7 +7,7 @@ RUN qmake
 RUN make
 RUN mkdir deploy
 RUN cp qt-virtualkeyboard-server deploy/qt-virtualkeyboard-server
-COPY --chown=user docker/qt-virtualkeyboard-server.desktop deploy/qt-virtualkeyboard-server.desktop
+COPY --chown=user docker/rel/qt-virtualkeyboard-server.desktop deploy/qt-virtualkeyboard-server.desktop
 RUN linuxdeployqt deploy/qt-virtualkeyboard-server -verbose=1 -qmldir=./qml -extra-plugins=virtualkeyboard
 
 FROM ubuntu:18.04 as release
@@ -46,8 +46,8 @@ COPY --chown=user --from=qt-builder /home/user/project-src/src/deploy ./qt-keybo
 CMD ./qt-keyboard-server/AppRun
 
 # CURRENT SIZE: 465MB
-# BUILD:
-# docker build . -f docker/rel.dockerfile -t keyboard-server --network=host
+# BUILD: (run in project root directory)
+# docker build . -f docker/rel/rel.dockerfile -t keyboard-server --network=host
 # RUN:
 # docker run --rm -it --name keyboard-server --network=host --pid=host --env DISPLAY=$DISPLAY keyboard-server
 # TODO:

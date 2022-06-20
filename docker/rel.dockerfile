@@ -8,7 +8,7 @@ RUN make
 RUN mkdir deploy
 RUN cp qt-virtualkeyboard-server deploy/qt-virtualkeyboard-server
 COPY --chown=user docker/qt-virtualkeyboard-server.desktop deploy/qt-virtualkeyboard-server.desktop
-RUN linuxdeployqt deploy/qt-virtualkeyboard-server -verbose=1 -qmldir=./qml
+RUN linuxdeployqt deploy/qt-virtualkeyboard-server -verbose=1 -qmldir=./qml -extra-plugins=virtualkeyboard
 
 FROM ubuntu:18.04 as release
 ENV DEBIAN_FRONTEND=noninteractive
@@ -45,7 +45,7 @@ ENV HOME /home/user
 COPY --chown=user --from=qt-builder /home/user/project-src/src/deploy ./qt-keyboard-server
 CMD ./qt-keyboard-server/AppRun
 
-# WARINING: USING THE LINUXDEPLOYQT SEEMS TO REMOVE SOME OF THE LANGUAGES. NEED TO INVESTIGATE
+# CURRENT SIZE: 465MB
 # BUILD:
 # docker build . -f docker/rel.dockerfile -t keyboard-server --network=host
 # RUN:

@@ -1,5 +1,6 @@
 FROM qt-dev:5.12.10 as qt-builder
 
+WORKDIR /home/user
 RUN mkdir project-src
 RUN git clone https://github.com/jimba81/qt-virtualkeyboard-server.git project-src
 WORKDIR /home/user/project-src/src

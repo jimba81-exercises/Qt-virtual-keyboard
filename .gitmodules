@@ -1,6 +1,4 @@
 [submodule "swpack/plugins/SalientEvo_Lib_Build"]
 	path = swpack/plugins/SalientEvo_Lib_Build
 	url = https://gitlab.bayer.com/imaxeon/salient-evo/SalientEvo_Lib_Build
-[submodule "docker/plugins/rabits-dockerfiles"]
-	path = docker/plugins/rabits-dockerfiles
-	url = https://github.com/rabits/dockerfiles
+

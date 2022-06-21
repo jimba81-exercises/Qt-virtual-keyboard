@@ -9,22 +9,35 @@ RUN apt-get install -y --no-install-recommends \
     locales \
     sudo \
     curl \
+    wget \
     build-essential \
     pkg-config \
+    libxrender-dev \
+    libxcb-render0-dev \
+    libxcb-render-util0-dev \
+    libxcb-shape0-dev \
+    libxcb-randr0-dev \
+    libxcb-xfixes0-dev \
+    libxcb-sync-dev \
+    libxcb-shm0-dev \
+    libxcb-icccm4-dev \
+    libxcb-keysyms1-dev \
+    libxcb-image0-dev \
+    libxcb-xinerama0-dev \
+    libxkbcommon-x11-dev \
+    libfontconfig-dev \
+    libfreetype6-dev \
+    libxi-dev \
+    libxext-dev \
+    libx11-dev \
+    libxcb1-dev \
+    libx11-xcb-dev \
+    libsm-dev \
+    libice-dev \
+    libglib2.0-dev \
+    libpthread-workqueue-dev \
+    libdbus-1-dev \
     libgl1-mesa-dev \
-    libsm6 \
-    libice6 \
-    libxext6 \
-    libxrender1 \
-    libxkbcommon-x11-0 \
-    libfontconfig1 \
-    libdbus-1-3 \
-    wget \
-    libxcb-icccm4 \
-    libxcb-image0 \
-    libxcb-keysyms1 \
-    libxcb-render-util0 \
-    libxcb-xinerama0 \
     && apt-get -qq clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -68,4 +81,6 @@ CMD qtcreator
 # BUILD: (run build command in project root directory)
 # docker build . -f docker/dev/dev.dockerfile -t qt-dev:5.12.10 --network=host
 # RUN: (run with bash at end if need to configure docker os)
-
+# docker run --rm -it --name qt-dev --network=host --pid=host --env DISPLAY=$DISPLAY -v ${PWD}/workspace:/home/user/workspace -v ~/.bash_history:/home/user/.bash_history qt-dev:5.12.10
+# Reference:
+# Qt X11 dependencies - https://doc.qt.io/archives/qt-5.12/linux-requirements.html

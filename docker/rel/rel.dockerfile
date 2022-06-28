@@ -2,6 +2,8 @@ FROM qt-dev:5.12.10 as qt-builder
 
 WORKDIR /home/user
 RUN mkdir project-src
+
+# TODO: Copy project
 RUN git clone https://github.com/jimba81/qt-virtualkeyboard-server.git project-src
 WORKDIR /home/user/project-src/src
 RUN qmake
@@ -11,6 +13,7 @@ RUN cp qt-virtualkeyboard-server deploy/qt-virtualkeyboard-server
 COPY --chown=user docker/rel/qt-virtualkeyboard-server.desktop deploy/qt-virtualkeyboard-server.desktop
 RUN linuxdeployqt deploy/qt-virtualkeyboard-server -verbose=1 -qmldir=./qml -extra-plugins=virtualkeyboard
 
+# TODO: Use lighter version to run qt
 FROM ubuntu:18.04 as release
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt update && apt full-upgrade -y
@@ -47,10 +50,16 @@ COPY --chown=user --from=qt-builder /home/user/project-src/src/deploy ./qt-keybo
 CMD ./qt-keyboard-server/AppRun
 
 # CURRENT SIZE: 465MB
-# BUILD: (run in project root directory)
-# docker build . -f docker/rel/rel.dockerfile -t keyboard-server --network=host
+
+# BUILD:
+# > cd ${PROJECT_PATH}
+# > docker build . -f docker/rel/rel.dockerfile -t ${PROJECT_NAME}
+
 # RUN:
-# docker run --rm -it --name keyboard-server --network=host --pid=host --env DISPLAY=$DISPLAY keyboard-server
+# > docker run --rm -it --network=host --pid=host --env DISPLAY=$DISPLAY --name ${PROJECT_NAME} ${PROJECT_NAME}
+
 # TODO:
-# add *.desktop file to the project rather than in docker folder
-# consider using different base images for smaller size
+# Add *.desktop file to the project rather than in docker folder
+# Consider using different base images for smaller size
+# Copy project rather than git pull from github
+# Set port map rather than network=host

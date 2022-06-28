@@ -80,7 +80,7 @@ CMD qtcreator
 
 # BUILD:
 # > cd ${PROJECT_PATH}
-# > docker build . -f docker/dev/dev.dockerfile -t qt-dev:${QT_VERSION} --network=host
+# > QT_VERSION=5.12.10; docker build . -f docker/dev/dev.dockerfile -t qt-dev:${QT_VERSION} --network=host
 
 # RUN:
 # > xhost local:root

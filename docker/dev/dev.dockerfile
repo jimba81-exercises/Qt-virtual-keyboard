@@ -78,9 +78,14 @@ WORKDIR /home/user/workspace
 
 CMD qtcreator
 
-# BUILD: (run build command in project root directory)
-# docker build . -f docker/dev/dev.dockerfile -t qt-dev:5.12.10 --network=host
-# RUN: (run with bash at end if need to configure docker os)
-# docker run --rm -it --name qt-dev --network=host --pid=host --env DISPLAY=$DISPLAY -v ${PWD}/workspace:/home/user/workspace -v ~/.bash_history:/home/user/.bash_history qt-dev:5.12.10
+# BUILD:
+# > cd ${PROJECT_PATH}
+# > docker build . -f docker/dev/dev.dockerfile -t qt-dev:${QT_VERSION} --network=host
+
+# RUN:
+# > xhost local:root
+# > docker run --rm -it --name qt-dev --network=host --pid=host --env DISPLAY=$DISPLAY -v ${PWD}/workspace:/home/user/workspace -v ~/.bash_history:/home/user/.bash_history qt-dev:${QT_VERSION}
+
 # Reference:
 # Qt X11 dependencies - https://doc.qt.io/archives/qt-5.12/linux-requirements.html
+

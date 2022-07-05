@@ -1,4 +1,9 @@
+# Arguments 
+ARG QT_VERSION=5.12.10
+
+# ---- Builder ---
 FROM ubuntu:18.04
+ARG QT_VERSION
 
 # Install needed OS packages
 RUN apt-get update && apt full-upgrade -y
@@ -42,7 +47,6 @@ RUN apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # Setup Qt Environment
-ENV QT_VERSION=5.12.10
 ENV DEBIAN_FRONTEND=noninteractive
 ENV QT_PATH=/opt/Qt
 ENV QT_DESKTOP $QT_PATH/${QT_VERSION}/gcc_64
@@ -54,7 +58,7 @@ RUN curl -Lo /tmp/qt/installer.run "https://mirrors.ocf.berkeley.edu/qt/official
 RUN chmod u+x /tmp/qt/installer.run
 
 # Install ALL Qt components and setup QtCreator
-COPY docker/dev/qt-installer.qs /tmp/qt/
+COPY ./docker/dev/qt-installer.qs /tmp/qt/
 RUN http_proxy=http://127.0.0.1 QT_QPA_PLATFORM=minimal /tmp/qt/installer.run -v --script /tmp/qt/qt-installer.qs
 RUN ln -s ${QT_PATH}/Tools/QtCreator/bin/qtcreator /usr/local/sbin/qtcreator
 
@@ -74,13 +78,14 @@ RUN rm -f linuxdeployqt-continuous-x86_64.AppImage
 
 USER user
 ENV HOME /home/user
+RUN mkdir workspace
 WORKDIR /home/user/workspace
 
 CMD qtcreator
 
 # BUILD:
 # > cd ${PROJECT_PATH}
-# > QT_VERSION=5.12.10; docker build . -f docker/dev/dev.dockerfile -t qt-dev:${QT_VERSION} --network=host
+# > docker build . -f docker/dev/dev.dockerfile -t qt-dev:${QT_VERSION} --network=host
 
 # RUN:
 # > xhost local:root

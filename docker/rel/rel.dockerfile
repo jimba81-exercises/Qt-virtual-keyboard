@@ -1,11 +1,12 @@
-FROM qt-dev:5.12.10 as qt-builder
 
-WORKDIR /home/user
-RUN mkdir project-src
+# Arguments 
+ARG QT_VERSION=5.12.10
 
-# TODO: Copy project
-RUN git clone https://github.com/jimba81/qt-virtualkeyboard-server.git project-src
-WORKDIR /home/user/project-src/src
+# ---- Builder ---
+FROM qt-dev:${QT_VERSION} as qt-builder
+USER user
+WORKDIR /home/user/workspace
+COPY --chown=user ./workspace ./
 RUN qmake
 RUN make
 RUN mkdir deploy
@@ -13,10 +14,10 @@ RUN cp qt-virtualkeyboard-server deploy/qt-virtualkeyboard-server
 COPY --chown=user docker/rel/qt-virtualkeyboard-server.desktop deploy/qt-virtualkeyboard-server.desktop
 RUN linuxdeployqt deploy/qt-virtualkeyboard-server -verbose=1 -qmldir=./qml -extra-plugins=virtualkeyboard
 
-# TODO: Use lighter version to run qt
+# ---- Release ----
 FROM ubuntu:18.04 as release
 ENV DEBIAN_FRONTEND=noninteractive
-RUN apt update && apt full-upgrade -y
+RUN apt update
 RUN apt install -y --no-install-recommends \
     sudo \
     locales \
@@ -46,10 +47,8 @@ USER user
 WORKDIR /home/user
 ENV HOME /home/user
 
-COPY --chown=user --from=qt-builder /home/user/project-src/src/deploy ./qt-keyboard-server
+COPY --chown=user --from=qt-builder /home/user/workspace/deploy ./qt-keyboard-server
 CMD ./qt-keyboard-server/AppRun
-
-# CURRENT SIZE: 465MB
 
 # BUILD:
 # > cd ${PROJECT_PATH}

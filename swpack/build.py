@@ -21,6 +21,7 @@ def main(argv):
   bsl_util = BSL_Util(__file__)
 
   # Args
+  qt_version = "5.12.10"
   version = 'latest'
   path_dest = f'{os.path.dirname(os.path.abspath(__file__))}/../swpack-dist'
   docker_registry_url = 'http://localhost:5000'
@@ -82,11 +83,17 @@ def main(argv):
   bsl_util.write_swpack_info(pack_name, version, f"{path_dest}/pack.inf.json", path_dest)
 
   # =======
-  bsl_util.build_docker_images(f'{bsl_util.dir_path}/pack.inf.json', pack_name, version, docker_registry_url, path_dest)
+  # Do after dev-image is created
+  # bsl_util.build_docker_images(f'{bsl_util.dir_path}/pack.inf.json', pack_name, version, docker_registry_url, path_dest)
 
   # ---------------------------------------------------------------------------------
   # >>>> ADD Build Procedure here...
+  bsl_util.log_task_started("Building docker dev image...")
+  bsl_util.log_warn("WARNING: This may take long time!!")
+  bsl_util.run_sys_cmd(f"(cd {bsl_util.dir_path}/.. &&  docker build . -f docker/dev/dev.dockerfile -t qt-dev:{qt_version})")
 
+  bsl_util.log_task_started("Building docker image...")
+  bsl_util.build_docker_images(f'{bsl_util.dir_path}/pack.inf.json', pack_name, version, docker_registry_url, path_dest)
 
   # =======
   bsl_util.log_info(f"Pack Gen Completed\n")

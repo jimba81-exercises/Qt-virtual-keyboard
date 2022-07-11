@@ -2,6 +2,7 @@
   "files": [
     "swpack/build.py",
     "swpack/install.py",
+    "swpack/uninstall.py",
     "swpack/start.py",
     "swpack/stop.py",
     "swpack/pack.inf.json",
@@ -9,20 +10,10 @@
   ],
   "docker_files": [
     {
-      "docker_file_path": "docker/rel/rel.Dockerfile",
+      "docker_file_path": "docker/rel/rel.dockerfile",
       "docker_image_name": "<pack_name>"
     }
   ],
   "docker_images": [
-  ],
-  "git_submodules": [
-    {
-      "repo_url": "https://<user>@gitlab.bayer.com/imaxeon/salient-evo/SalientEvo_Lib_Build",
-      "src_path": "swpack/plugins/SalientEvo_Lib_Build"
-    },
-    {
-      "repo_url": "https://<user>@gitlab.bayer.com/imaxeon/salient-evo/SalientEvo_Lib_TS_Common",
-      "src_path": "workspace/src/plugins/SalientEvo_Lib_TS_Common"
-    }
   ]
 }

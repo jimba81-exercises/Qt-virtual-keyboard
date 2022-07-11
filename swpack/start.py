@@ -10,12 +10,11 @@ from plugins.SalientEvo_Lib_Build.bsl_util import BSL_Util
 USAGE = \
   f"Usage: {os.path.basename(__file__)} [OPTION]...\nStart software pack.\n\n\
   -i, --pack_inf_file_path     pack inf file path, default=./pack.inf.json\n\
-  -p, --port                   server port, default=3000\n\
-  -k, --pkgs_path              pkgs_path, default=~/pkgs\n\
+  -p, --port                   server port, default=3005\n\
   -l, --logs_path              logs_path, default=~/logs\n\
   -e, --env_file_path          env file path, default=~/.env/.env\n\
   \nExamples:\n\
-  {os.path.basename(__file__)} -i ./pack.inf.json -p 3000\n"
+  {os.path.basename(__file__)} -i ./pack.inf.json -p 3005\n"
 
 # ==================================
 # Main
@@ -25,15 +24,14 @@ def main(argv):
   # Args
   pack_name = ''
   pack_tag = ''
-  port = 3000
+  port = 3005
   pack_inf_file_path = f'{bsl_util.dir_path}/pack.inf.json'
-  pkgs_path = '~/pkgs'
   logs_path = '~/logs'
   env_file_path = '~/.env/.env'
 
   # Validage args
   try:
-    opts, args = getopt.getopt(argv, "hi:p:k:p:e:", ["help", "pack_inf_file_path=", "port=", "pkgs_path=", "logs_path=", "env_file_path="])
+    opts, args = getopt.getopt(argv, "hi:p:l:e:", ["help", "pack_inf_file_path=", "port=", "logs_path=", "env_file_path="])
   except getopt.GetoptError as e:
     bsl_util.log(USAGE)
     bsl_util.exit(f'GetoptError: {e}', 2)
@@ -47,8 +45,6 @@ def main(argv):
       pack_inf_file_path = arg
     elif opt in ("-p", "--port"):
       port = arg          
-    elif opt in ("-k", "--pkgs_path"):
-      pkgs_path = arg
     elif opt in ("-l", "--logs_path"):
       logs_path = arg        
     elif opt in ("-e", "--env_file_path"):
@@ -76,7 +72,6 @@ def main(argv):
   bsl_util.log(f"    pack_tag:              {pack_tag}")
   bsl_util.log(f"    port:                  {port}")  
   bsl_util.log(f"    pack_inf_file_path:    {pack_inf_file_path}")
-  bsl_util.log(f"    pkgs_path:             {pkgs_path}")
   bsl_util.log(f"    env_file_path:         {env_file_path}")
   bsl_util.log("")
     
@@ -88,8 +83,14 @@ def main(argv):
   bsl_util.run_sys_cmd(f'{bsl_util.dir_path}/stop.py', True, None, {}, False)
 
   # =======
+  bsl_util.log_task_started("Start xhost...")
+  bsl_util.run_sys_cmd(f'xhost local:root')
+
+  # =======
   bsl_util.log_task_started("Starting docker container...")
-  bsl_util.run_sys_cmd(f'docker run --rm --detach --network host --pid=host -v {pkgs_path}:/pkgs -v {logs_path}:/home/node/logs --env-file {env_file_path} --name {pack_name} {pack_name}:{pack_tag}')
+  bsl_util.run_sys_cmd(f'docker run --rm --detach --pid=host -p ${port}:3000 -v /tmp/.X11-unix:/tmp/.X11-unix --env DISPLAY=$DISPLAY --env-file {env_file_path} --name {pack_name} {pack_name}:{pack_tag}')
+
+
 
   # =======
   

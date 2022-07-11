@@ -4,16 +4,18 @@ version: '3'
 #  QT_VERSION=5.12.10
 #  QKEYBOARD_SERVICE_PORT=3000
 
+# Commands:
+# > docker-compose build qt_dev
 services:
 
-  image_build:
+  qt_dev:
     image: qt-dev:$QT_VERSION
     build:
       args:
         - QT_VERSION=$QT_VERSION
       context: ../
       dockerfile: ./docker/dev/dev.dockerfile
-    command: "echo image-build is terminated"
+    command: "qt-dev image build completed"
   
   qkeyboard_service:
     image: qkeyboard-service

@@ -55,7 +55,7 @@ CMD ./qt-keyboard-server/AppRun
 # > docker build . -f docker/rel/rel.dockerfile -t ${PROJECT_NAME}
 
 # RUN:
-# > docker run --rm -it --network=host --pid=host --env DISPLAY=$DISPLAY --name ${PROJECT_NAME} ${PROJECT_NAME}
+# > docker run --rm -it --pid=host -p ${PORT}:3000 -v /tmp/.X11-unix:/tmp/.X11-unix --env DISPLAY=$DISPLAY --name ${PROJECT_NAME} ${PROJECT_NAME}
 
 # TODO:
 # Add *.desktop file to the project rather than in docker folder

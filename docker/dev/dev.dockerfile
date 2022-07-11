@@ -3,7 +3,7 @@ ARG QT_VERSION=5.12.10
 
 # ---- Builder ---
 FROM ubuntu:18.04
-ARG QT_VERSION
+ARG QT_VERSION 
 
 # Install needed OS packages
 RUN apt-get update && apt full-upgrade -y
@@ -76,6 +76,35 @@ RUN chmod +x deployqt/AppRun
 RUN ln -s /home/user/deployqt/AppRun /usr/local/sbin/linuxdeployqt
 RUN rm -f linuxdeployqt-continuous-x86_64.AppImage
 
+# SETUP QT RUNTIME ENVIRONMENT
+USER root
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt update
+RUN apt install -y --no-install-recommends \
+    sudo \
+    locales \
+    libgl1-mesa-dev \
+    libglib2.0-0 \
+    libsm6 \
+    libice6 \
+    libxext6 \
+    libxrender1 \
+    libxkbcommon-x11-0 \
+    libfontconfig1 \
+    libdbus-1-3 \
+    fonts-arphic-ukai \
+    fonts-arphic-uming \
+    fonts-ipafont-mincho \
+    fonts-ipafont-gothic \
+    fonts-unfonts-core \
+    fonts-indic \
+    fonts-thai-tlwg-ttf \
+    && apt-get -qq clean \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN locale-gen en_US.UTF-8 && dpkg-reconfigure locales
+
+# SETUP WORKSPACE ENVIRONMENT
 USER user
 ENV HOME /home/user
 RUN mkdir workspace
@@ -85,11 +114,11 @@ CMD qtcreator
 
 # BUILD:
 # > cd ${PROJECT_PATH}
-# > docker build . -f docker/dev/dev.dockerfile -t qt-dev:${QT_VERSION} --network=host
+# > QT_VERSION=5.12.10 docker build . -f docker/dev/dev.dockerfile -t qt-dev:${QT_VERSION}
 
 # RUN:
 # > xhost local:root
-# > docker run --rm -it --name qt-dev --network=host --pid=host --env DISPLAY=$DISPLAY -v ${PWD}/workspace:/home/user/workspace -v ~/.bash_history:/home/user/.bash_history qt-dev:${QT_VERSION}
+# > docker run --rm -it --privileged --network=host --pid=host --env DISPLAY=$DISPLAY -v ${PWD}/workspace:/home/user/workspace -v ~/.bash_history:/home/user/.bash_history --name qt-dev qt-dev:${QT_VERSION}
 
 # Reference:
 # Qt X11 dependencies - https://doc.qt.io/archives/qt-5.12/linux-requirements.html

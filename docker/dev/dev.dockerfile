@@ -76,22 +76,11 @@ RUN chmod +x deployqt/AppRun
 RUN ln -s /home/user/deployqt/AppRun /usr/local/sbin/linuxdeployqt
 RUN rm -f linuxdeployqt-continuous-x86_64.AppImage
 
-# SETUP QT RUNTIME ENVIRONMENT
+# Install Fonts
 USER root
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt update
 RUN apt install -y --no-install-recommends \
-    sudo \
-    locales \
-    libgl1-mesa-dev \
-    libglib2.0-0 \
-    libsm6 \
-    libice6 \
-    libxext6 \
-    libxrender1 \
-    libxkbcommon-x11-0 \
-    libfontconfig1 \
-    libdbus-1-3 \
     fonts-arphic-ukai \
     fonts-arphic-uming \
     fonts-ipafont-mincho \
@@ -102,7 +91,7 @@ RUN apt install -y --no-install-recommends \
     && apt-get -qq clean \
     && rm -rf /var/lib/apt/lists/*
 
-RUN locale-gen en_US.UTF-8 && dpkg-reconfigure locales
+# RUN locale-gen en_US.UTF-8 && dpkg-reconfigure locales
 
 # SETUP WORKSPACE ENVIRONMENT
 USER user

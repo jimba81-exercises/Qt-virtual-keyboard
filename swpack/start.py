@@ -84,7 +84,7 @@ def main(argv):
 
   # =======
   bsl_util.log_task_started("Start xhost...")
-  bsl_util.run_sys_cmd(f'xhost local:root')
+  bsl_util.run_sys_cmd(f'xhost local:root', False)
 
   # =======
   bsl_util.log_task_started("Starting docker container...")

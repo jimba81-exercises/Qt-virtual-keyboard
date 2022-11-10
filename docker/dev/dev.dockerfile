@@ -1,9 +1,11 @@
 # Arguments 
 ARG QT_VERSION=5.12.10
+ARG QT_DOWNLOAD_URL="https://mirrors.ocf.berkeley.edu/qt/archive/qt"
 
 # ---- Builder ---
 FROM ubuntu:18.04
-ARG QT_VERSION 
+ARG QT_VERSION
+ARG QT_DOWNLOAD_URL 
 
 # Install needed OS packages
 RUN apt-get update && apt full-upgrade -y
@@ -54,11 +56,12 @@ ENV PATH $QT_DESKTOP/bin:$PATH
 
 # Download Qt Installer
 RUN mkdir -p /tmp/qt
-RUN curl -Lo /tmp/qt/installer.run "https://mirrors.ocf.berkeley.edu/qt/official_releases/qt/$(echo "${QT_VERSION}" | cut -d. -f 1-2)/${QT_VERSION}/qt-opensource-linux-x64-${QT_VERSION}.run"
+RUN curl -Lo /tmp/qt/installer.run "${QT_DOWNLOAD_URL}/$(echo "${QT_VERSION}" | cut -d. -f 1-2)/${QT_VERSION}/qt-opensource-linux-x64-${QT_VERSION}.run"
 RUN chmod u+x /tmp/qt/installer.run
 
 # Install ALL Qt components and setup QtCreator
 COPY ./docker/dev/qt-installer.qs /tmp/qt/
+
 RUN http_proxy=http://127.0.0.1 QT_QPA_PLATFORM=minimal /tmp/qt/installer.run -v --script /tmp/qt/qt-installer.qs
 RUN ln -s ${QT_PATH}/Tools/QtCreator/bin/qtcreator /usr/local/sbin/qtcreator
 
